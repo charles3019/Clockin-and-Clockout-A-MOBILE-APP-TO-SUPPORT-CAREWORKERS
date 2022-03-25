@@ -1,23 +1,48 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import {
+    FlatList,
+    StyleSheet,
+} from 'react-native';
 
 const AvailableShiftScreen = props => {
-  return (
-    <View style={styles.screen}>
-      <Text>The Available Shift Screen!</Text>
-      <Button title="Go to ShiftDetails!" onPress={() => {
-          props.navigation.navigate({routeName: 'ShiftDetails'});
-      }} />
-    </View>
-  );
+    const renderGridItem = itemData => {
+        return (
+            <CategoryGridTile
+                title={itemData.item.title}
+                color={itemData.item.color}
+                onSelect={() => {
+                    props.navigation.navigate({
+                        routeName: 'ShiftDetails',
+                        params: {
+                            categoryId: itemData.item.id
+                        }
+                    });
+                }}
+            />
+        );
+    };
+
+    return (
+        <FlatList
+            keyExtractor={(item, index) => item.id}
+            data={CATEGORIES}
+            renderItem={renderGridItem}
+            numColumns={2}
+        />
+    );
+};
+
+
+AvailableShiftScreen.navigationOptions = {
+    headerTitle: 'Available Shifts'
 };
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
+    screen: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
 });
 
 export default AvailableShiftScreen;
