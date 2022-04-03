@@ -1,22 +1,33 @@
 import React, { useState } from 'react';
-// import { Text, View } from 'react-native';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
+// import { AppLoading } from 'expo';
+import AppLoading from 'expo-app-loading';
 import * as Font from 'expo-font';
-import AppLoading from 'expo-app-loading'
+import ReduxThunk from 'redux-thunk';
 import { enableScreens } from 'react-native-screens';
 
+import productsReducer from './store/reducers/products';
+import cartReducer from './store/reducers/cart';
+import ordersReducer from './store/reducers/orders';
+import authReducer from './store/reducers/auth';
+import AppNavigator from './navigation/AppNavigator';
 
-import ClockNavigator from './navigation/ClockNavigator';
+const rootReducer = combineReducers({
+  products: productsReducer,
+  cart: cartReducer,
+  orders: ordersReducer,
+  auth: authReducer
+});
 
+const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 enableScreens();
-
 const fetchFonts = () => {
   return Font.loadAsync({
     'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
     'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf')
   });
 };
-
-
 
 export default function App() {
   const [fontLoaded, setFontLoaded] = useState(false);
@@ -30,6 +41,9 @@ export default function App() {
       />
     );
   }
-
-  return <ClockNavigator />;
+  return (
+    <Provider store={store}>
+      <AppNavigator />
+    </Provider>
+  );
 }
