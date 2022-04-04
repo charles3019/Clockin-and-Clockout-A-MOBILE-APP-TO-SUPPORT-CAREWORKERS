@@ -45,6 +45,7 @@ export default (state = initialState, action) => {
       const productIndex = state.userShifts.findIndex(
         prod => prod.id === action.pid
       );
+      // console.log(state.userShifts[productIndex]);
       const updatedShift = new Shift(
         action.pid,
         state.userShifts[productIndex].ownerId,
@@ -53,8 +54,8 @@ export default (state = initialState, action) => {
         action.productData.shiftDate,
         action.productData.shiftTime,
         action.productData.shiftLocation,
-        action.productData[productIndex].shiftStatus,
-        action.productData[productIndex].bookedBy,
+        state.userShifts[productIndex].shiftStatus,
+        state.userShifts[productIndex].bookedBy,
         action.productData.description,
         state.userShifts[productIndex].price
       );
