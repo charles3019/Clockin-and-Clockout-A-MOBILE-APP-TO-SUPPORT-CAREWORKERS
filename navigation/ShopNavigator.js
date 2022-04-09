@@ -15,9 +15,9 @@ import ShiftDetailScreen, {
 import CartScreen, {
   screenOptions as cartScreenOptions
 } from '../screens/shift/CartScreen';
-import OrdersScreen, {
+import JobScreen, {
   screenOptions as ordersScreenOptions
-} from '../screens/shift/OrdersScreen';
+} from '../screens/shift/JobScreen';
 import UserShiftsScreen, {
   screenOptions as userShiftsScreenOptions
 } from '../screens/user/UserShiftsScreen';
@@ -27,6 +27,7 @@ import EditShiftScreen, {
 import AuthScreen, {
   screenOptions as authScreenOptions
 } from '../screens/user/AuthScreen';
+import ClockInOutScreen, { screenOptions as clockInOutOption} from '../screens/shift/ClockInOutScreen';
 import StartupScreen from '../screens/StartupScreen';
 import Colors from '../constants/Colors';
 import * as authActions from '../store/actions/auth';
@@ -94,9 +95,14 @@ export const OrdersNavigator = () => {
   return (
     <OrdersStackNavigator.Navigator screenOptions={defaultNavOptions}>
       <OrdersStackNavigator.Screen
-        name="TestOrder"
-        component={OrdersScreen}
+        name="jobScreen"
+        component={JobScreen}
         options={ordersScreenOptions}
+      />
+      <OrdersStackNavigator.Screen
+        name="ClockInOut"
+        component={ClockInOutScreen}
+        options={clockInOutOption}
       />
     </OrdersStackNavigator.Navigator>
   );
@@ -104,7 +110,7 @@ export const OrdersNavigator = () => {
 
 // const OrdersNavigator = createStackNavigator(
 //   {
-//     Orders: OrdersScreen
+//     Orders: JobScreen
 //   },
 //   {
 //     navigationOptions: {

@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback, useReducer } from 'react';
 import {
   View,
+  Text,
+  Button,
   ScrollView,
   StyleSheet,
   Platform,
@@ -15,6 +17,7 @@ import HeaderButton from '../../components/UI/HeaderButton';
 import * as productsActions from '../../store/actions/products';
 import Input from '../../components/UI/Input';
 import Colors from '../../constants/Colors';
+import  DateTimePicker from '@react-native-community/datetimepicker';
 // import ShiftStatuses from '../../constants/ShiftStatuses';
 
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
@@ -46,6 +49,8 @@ const EditShiftScreen = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
 
+  
+
   const prodId = props.route.params ? props.route.params.productId : null;
   const editedShift = useSelector(state =>
     state.products.userShifts.find(prod => prod.id === prodId)
@@ -60,23 +65,52 @@ const EditShiftScreen = props => {
       
       // shiftStatus: editedShift ? editedShift.shiftStatus : ShiftStatuses.open,
       price: '',
-      shiftDate: editedShift ? editedShift.shiftDate : '',
-      shiftTime: editedShift ? editedShift.shiftTime : '',
+      // shiftDate: editedShift ? editedShift.shiftDate : '',
+      // shiftTime: editedShift ? editedShift.shiftTime : '',
       shiftLocation: editedShift ? editedShift.shiftLocation : ''
     },
     inputValidities: {
       title: editedShift ? true : false,
       imageUrl: editedShift ? true : false,
-      description: editedShift ? true : false,
+      description: true,
       // shiftStatus: true,
       price: editedShift ? true : false,
-      shiftDate: editedShift ? true : false,
-      shiftTime: editedShift ? true : false,
+      // shiftDate: true ,
+      // shiftTime: true,
       shiftLocation: editedShift ? true : false
     },
     formIsValid: editedShift ? true : false
   });
 
+  
+  /**
+   * For Date Time Picker
+   */
+   const [shiftDate, setShiftDate] = useState();
+   const [shiftTime, setShiftTime] = useState();
+   const [date, setDate] = useState(new Date);
+   const [mode, setMode] = useState('date');
+   const [show, setShow] = useState(false);
+   const [txt , setTxt] = useState("Set Date and Time");
+  //  editedShift ? setTxt(editedShift.shiftDate + "\t" + editedShift.shiftTime): setTxt("Enter Date and Time")
+   const onChange = (event, selectedDate) => {
+     const currentDate = selectedDate || date;
+     setShow(Platform.OS === "ios");
+     setDate(currentDate);
+ 
+     let tempDate = new Date(currentDate);
+     let fDate = tempDate.getDate() + ' ' + (tempDate.getMonth() +1) + ' '+ tempDate.getFullYear();
+     let fTime = tempDate.getHours() + ':' + tempDate.getMinutes();
+     setShiftDate(fDate);
+     setShiftTime(fTime);
+     setTxt(fDate + "\t\t\t\t" + fTime );
+ 
+   }
+
+   const showMode = (currentMode) =>{
+     setShow(true);
+     setMode(currentMode);
+   }
   useEffect(() => {
     // console.log("From Edit Shift Screen:",editedShift);
     if (error) {
@@ -101,8 +135,10 @@ const EditShiftScreen = props => {
             formState.inputValues.title,
             formState.inputValues.description,
             formState.inputValues.imageUrl,
-            formState.inputValues.shiftDate,
-            formState.inputValues.shiftTime,
+            shiftDate,
+            shiftTime,
+            // formState.inputValues.shiftDate,
+            // formState.inputValues.shiftTime,
             formState.inputValues.shiftLocation,
             // formState.inputValues.shiftStatus
           )
@@ -113,8 +149,10 @@ const EditShiftScreen = props => {
             formState.inputValues.title,
             formState.inputValues.description,
             formState.inputValues.imageUrl,
-            formState.inputValues.shiftDate,
-            formState.inputValues.shiftTime,
+            shiftDate,
+            shiftTime,
+            // formState.inputValues.shiftDate,
+            // formState.inputValues.shiftTime,
             formState.inputValues.shiftLocation,
             // formState.inputValues.shiftStatus,
             +formState.inputValues.price
@@ -130,6 +168,7 @@ const EditShiftScreen = props => {
   }, [dispatch, prodId, formState]);
 
   useEffect(() => {
+    
     props.navigation.setOptions({
       headerRight: () => (
         <HeaderButtons HeaderButtonComponent={HeaderButton}>
@@ -144,6 +183,8 @@ const EditShiftScreen = props => {
       )
     });
   }, [submitHandler]);
+  
+  
 
   const inputChangeHandler = useCallback(
     (inputIdentifier, inputValue, inputValidity) => {
@@ -156,6 +197,11 @@ const EditShiftScreen = props => {
     },
     [dispatchFormState]
   );
+
+  useEffect(() => {
+    editedShift ? setTxt(editedShift.shiftDate + "\t" + editedShift.shiftTime): setTxt("Enter Date AND Time")
+    
+  }, []);
 
   if (isLoading) {
     return (
@@ -197,7 +243,7 @@ const EditShiftScreen = props => {
             initiallyValid={!!editedShift}
             required
           />
-          <Input
+          {/* <Input
             id="shiftDate"
             label="Date of the Shift"
             errorText="Please enter a valid Date!"
@@ -208,8 +254,9 @@ const EditShiftScreen = props => {
             initiallyValid={!!editedShift}
             required
             
-          />
-          <Input
+          /> */}
+
+          {/* <Input
             id="shiftTime"
             label="Time of the Shift"
             errorText="Please enter a valid Time!"
@@ -219,7 +266,8 @@ const EditShiftScreen = props => {
             initialValue={editedShift ? editedShift.shiftTime : ''}
             initiallyValid={!!editedShift}
             required
-          />
+          /> */}
+
           <Input
             id="shiftLocation"
             label="Location of the Shift"
@@ -242,10 +290,34 @@ const EditShiftScreen = props => {
             initiallyValid={!!editedShift}
             required
           /> */}
+          <View style= {styles.container}>
+            <Text >
+              {/* { editedShift ? setTxt(editedShift.shiftDate + "\t" + editedShift.shiftTime): setTxt("Enter Date and Time") } */}
+              {txt}
+            </Text>
+            <View style = {styles.buttonContainer}>
+            <View style={styles.buttonWithIn}>
+              <Button title='Pick Date' onPress= {()=> showMode('date')}/>
+            </View>
+            <View style={styles.buttonWithIn}>
+              <Button title='Pick Time' onPress= {()=> showMode('time')}/>
+            </View>
+            </View>
+            {show &&(
+              <DateTimePicker
+              testID = 'dateTimePicker'
+              value={date}
+              mode={mode}
+              is24Hour = {false}
+              display='default'
+              onChange={onChange}
+              />
+            )}
+          </View>
           {editedShift ? null : (
             <Input
               id="price"
-              label="Price"
+              label="Pay per Hour"
               errorText="Please enter a valid price!"
               keyboardType="decimal-pad"
               returnKeyType="next"
@@ -287,9 +359,22 @@ const styles = StyleSheet.create({
     margin: 20
   },
   centered: {
-    flex: 1,
+    // flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  container: {
+    marginTop: 15,
+    alignContent: 'center',
+    justifyContent: 'center'
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: "space-between"
+  },
+  buttonWithIn: {
+    width: '30%',
+    margin: 15
   }
 });
 

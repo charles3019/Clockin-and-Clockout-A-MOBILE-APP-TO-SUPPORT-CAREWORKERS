@@ -16,6 +16,7 @@ import ShiftItem from '../../components/shift/ShiftItem';
 import * as cartActions from '../../store/actions/cart';
 import * as productsActions from '../../store/actions/products';
 import Colors from '../../constants/Colors';
+import ShiftStatuses from '../../constants/ShiftStatuses';
 
 const ShiftsOverviewScreen = props => {
   const [isLoading, setIsLoading] = useState(false);
@@ -112,7 +113,8 @@ const ShiftsOverviewScreen = props => {
             color={Colors.primary}
             title="Book"
             onPress={() => {
-              dispatch(cartActions.addToCart(itemData.item));
+              // dispatch(cartActions.addToCart(itemData.item));
+              dispatch(productsActions.bookShift(itemData.item.id, ShiftStatuses.booked));
             }}
           />
         </ShiftItem>

@@ -1,6 +1,6 @@
 // import ShiftStatuses from "../constants/ShiftStatuses";
 class Shift {
-  constructor(id, ownerId, title, imageUrl,  shiftDate, shiftTime, shiftLocation, shiftStatus, bookedBy, description, price) {
+  constructor(id, ownerId, title, imageUrl,  shiftDate, shiftTime, shiftLocation, shiftStatus, bookedBy, description, timeStamps, price) {
     this.id = id;
     this.ownerId = ownerId;
     this.imageUrl = imageUrl;
@@ -12,6 +12,7 @@ class Shift {
     this.shiftLocation = shiftLocation;
     this.shiftStatus = shiftStatus;
     this.bookedBy = bookedBy;
+    this.timeStamps = timeStamps;
     
   }
 }
