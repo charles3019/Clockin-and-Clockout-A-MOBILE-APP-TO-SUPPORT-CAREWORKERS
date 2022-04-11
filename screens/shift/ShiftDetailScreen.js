@@ -8,9 +8,10 @@ import {
   StyleSheet
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-
+import * as productsActions from '../../store/actions/products';
 import Colors from '../../constants/Colors';
 import * as cartActions from '../../store/actions/cart';
+import ShiftStatuses from '../../constants/ShiftStatuses';
 
 const ShiftDetailScreen = props => {
   const productId = props.route.params.productId;
@@ -23,13 +24,18 @@ const ShiftDetailScreen = props => {
     <ScrollView>
       <Image style={styles.image} source={{ uri: selectedShift.imageUrl }} />
       <View style={styles.actions}>
-        <Button
+        {/* <Button
           color={Colors.primary}
           title="Book Shift"
           onPress={() => {
-            dispatch(cartActions.addToCart(selectedShift));
-          }}
-        />
+            // dispatch(cartActions.addToCart(selectedShift));
+              // dispatch(cartActions.addToCart(itemData.item));
+              dispatch(productsActions.bookShift(selectedShift.id, ShiftStatuses.booked));
+              // navigator
+              props.navigation.navigate('ShiftsOverview')
+            }
+        }
+        /> */}
       </View>
       {/* .toFixed(2) */}
       <Text style={styles.price}>${selectedShift.price}</Text>

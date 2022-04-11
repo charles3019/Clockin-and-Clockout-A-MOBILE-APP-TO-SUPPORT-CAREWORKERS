@@ -5,7 +5,8 @@ import {
   Text,
   Image,
   Button,
-  StyleSheet
+  StyleSheet,
+  FlatList
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -13,6 +14,10 @@ import Colors from '../../constants/Colors';
 import * as cartActions from '../../store/actions/cart';
 import * as productsActions from '../../store/actions/products';
 import ShiftStatuses from '../../constants/ShiftStatuses';
+import ShiftTimeStamps from '../../components/shift/ShiftTimeStamps';
+
+import { LogBox } from 'react-native';
+
 
 const ClockInOutScreen = props => {
   const [timeStart, setTimeStart] = useState() ;
@@ -27,9 +32,12 @@ const ClockInOutScreen = props => {
     setBreakButton(false);
     setHomeButton(true);
   }, []);
-
+  useEffect(() => {
+    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+}, []);
   const inButtonPressed = () =>{
     let startingTime = new Date;
+    startingTime = startingTime.toISOString();
     setTimeStart(startingTime);
     setInButton(false);
     setOutButton(true);
@@ -39,6 +47,7 @@ const ClockInOutScreen = props => {
 
   const breakButtonPressed = (id) =>{
     timeOut = new Date;
+    timeOut = timeOut.toISOString();
     setInButton(true);
     setOutButton(false);
     setBreakButton(false);
@@ -49,6 +58,7 @@ const ClockInOutScreen = props => {
 
   const outButtonPressed = (id) =>{
     timeOut = new Date;
+    timeOut = timeOut.toISOString();
     setInButton(false);
     setOutButton(false);
     setBreakButton(false);
@@ -61,6 +71,10 @@ const ClockInOutScreen = props => {
     state.products.userBookShift.find(prod => prod.id === productId)
   );
   const dispatch = useDispatch();
+  const StimeStamps = selectedShift.timeStamps;
+  // console.log(StimeStamps);
+  // console.log(StimeStamps.length);
+  // for (const key in resData)
   // console.log("Details Screen", selectedShift);
   return (
     <ScrollView>
@@ -69,8 +83,39 @@ const ClockInOutScreen = props => {
       {/* .toFixed(2) */}
       <Text style={styles.price}>${selectedShift.price}</Text>
       <Text style={styles.description}>{selectedShift.description}</Text>
-      {/* <Text style={styles.description}>{selectedShift}</Text> */}
+      <View style = {styles.statusStyle}>
 
+      <Text style={{fontFamily: 'open-sans', width: "35%"}}>{"Status"}</Text>
+      <Text style={{fontFamily: 'open-sans-bold'}}>{selectedShift.shiftStatus}</Text>
+
+      </View>
+
+      <View style ={styles.table} >
+        {/* <Text>
+          {"#"}
+        </Text> */}
+        <Text style = {{width:'40%'}}>
+          {"IN TIME"}
+        </Text>
+        <Text style = {{width:'40%'}}>
+          {"OUT TIME"}
+        </Text>
+      </View>
+      {StimeStamps && (
+      <FlatList
+      data={StimeStamps}
+      keyExtractor={(item, index) => index.toString()}
+      renderItem={
+        ({item}) => <ShiftTimeStamps
+          inTime = {item.clockIn}
+          outTime = {item.clockOut}
+          />
+      } 
+      
+      
+      />
+      )}
+      
       <View style={styles.threeButtons}>
         <View style = {styles.buttonWithIn}>
         <Button
@@ -119,6 +164,20 @@ export const screenOptions = navData => {
 };
 
 const styles = StyleSheet.create({
+  table:{
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: 15,
+    marginVertical: 15
+    // marginTop:15
+},
+statusStyle:{
+  flexDirection: 'row',
+  justifyContent: 'flex-start',
+  // width: '35%',
+  marginHorizontal: 15,
+  
+},
   image: {
     width: '100%',
     height: 300
