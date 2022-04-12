@@ -17,7 +17,9 @@ import HeaderButton from '../../components/UI/HeaderButton';
 import * as productsActions from '../../store/actions/products';
 import Input from '../../components/UI/Input';
 import Colors from '../../constants/Colors';
-import  DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import LocationPicker from '../../components/shift/LocationPicker';
+import * as Location from 'expo-location';
 // import ShiftStatuses from '../../constants/ShiftStatuses';
 
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
@@ -48,8 +50,8 @@ const formReducer = (state, action) => {
 const EditShiftScreen = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
-
-  
+  const [isFetching, setIsFetching] = useState(false);
+  const [pickedLocation, setPickedLocation] = useState();
 
   const prodId = props.route.params ? props.route.params.productId : null;
   const editedShift = useSelector(state =>
@@ -92,6 +94,7 @@ const EditShiftScreen = props => {
    const [mode, setMode] = useState('date');
    const [show, setShow] = useState(false);
    const [txt , setTxt] = useState("Set Date and Time");
+   const [selectedLocation, setSelectedLocation] = useState();
   //  editedShift ? setTxt(editedShift.shiftDate + "\t" + editedShift.shiftTime): setTxt("Enter Date and Time")
    const onChange = (event, selectedDate) => {
      const currentDate = selectedDate || date;
@@ -106,6 +109,59 @@ const EditShiftScreen = props => {
      setTxt(fDate + "\t\t\t\t" + fTime );
  
    }
+   //Location Based functions
+
+   const locationPickedHandler = useCallback(location => {
+    setSelectedLocation(location);
+  }, []);
+  const pickOnMapHandler = () => {
+    props.navigation.navigate('Map',{ saveLocation: "Location", readonly: false });
+  };
+
+  const verifyPermissions = async () => {
+    const result = await Location.requestForegroundPermissionsAsync();
+    // const result = await Permissions.askAsync(Permissions.LOCATION);
+    if (result.status !== 'granted') {
+      Alert.alert(
+        'Insufficient permissions!',
+        'You need to grant location permissions to use this app.',
+        [{ text: 'Okay' }]
+      );
+      return false;
+    }
+    return true;
+  };
+
+  const getLocationHandler = async () => {
+    const hasPermission = await verifyPermissions();
+    if (!hasPermission) {
+      return;
+    }
+
+    try {
+      setIsFetching(true);
+      const location = await Location.getCurrentPositionAsync({
+        timeout: 5000
+      });
+      console.log(location);
+      setPickedLocation({
+        lat: location.coords.latitude,
+        lng: location.coords.longitude
+      });
+      // props.onLocationPicked({
+      //   lat: location.coords.latitude,
+      //   lng: location.coords.longitude
+      // });
+    } catch (err) {
+      console.log(err);
+      Alert.alert(
+        'Could not fetch location!',
+        'Please try again later or pick a location on the map.',
+        [{ text: 'Okay' }]
+      );
+    }
+    setIsFetching(false);
+  };
 
    const showMode = (currentMode) =>{
      setShow(true);
@@ -210,7 +266,9 @@ const EditShiftScreen = props => {
       </View>
     );
   }
-
+  // if (theLocation) {
+  //   console.log(theLocation);
+  // }
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -279,6 +337,23 @@ const EditShiftScreen = props => {
             initiallyValid={!!editedShift}
             required
           />
+          {/* {console.log(props.navigation)} */}
+          <View style={styles.actions}>
+            <Button
+            title="Get User Location"
+            color={Colors.primary}
+            onPress={getLocationHandler}
+            />
+            <Button
+            title="Pick on Map"
+            color={Colors.primary}
+            onPress={pickOnMapHandler}
+            />
+          </View>
+          {/* <LocationPicker
+          navigation={props.navigation}
+          onLocationPicked={locationPickedHandler}
+        /> */}
           {/* <Input
             id="shiftStatus"
             label="Choose Shift Status"
@@ -349,6 +424,7 @@ const EditShiftScreen = props => {
 
 export const screenOptions = navData => {
   const routeParams = navData.route.params ? navData.route.params : {};
+  const theLocation = navData.route.params ? navData.route.params.pickedLocation : {};
   return {
     headerTitle: routeParams.productId ? 'Edit Shift' : 'Add Shift'
   };
@@ -374,6 +450,12 @@ const styles = StyleSheet.create({
   },
   buttonWithIn: {
     width: '30%',
+    margin: 15
+  },
+  actions: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
     margin: 15
   }
 });

@@ -16,9 +16,6 @@ import ShiftClockScreen from '../screens/ShiftClockScreen';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 
 import { Ionicons } from '@expo/vector-icons';
-
-
-import Colors from '../constants/Colors';
 const ClockNavigator = createStackNavigator(
     {
         Shifts: {

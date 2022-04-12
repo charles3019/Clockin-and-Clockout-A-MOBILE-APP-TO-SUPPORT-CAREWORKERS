@@ -16,7 +16,7 @@ import CartScreen, {
   screenOptions as cartScreenOptions
 } from '../screens/shift/CartScreen';
 import JobScreen, {
-  screenOptions as ordersScreenOptions
+  screenOptions as jobScreenOptions
 } from '../screens/shift/JobScreen';
 import UserShiftsScreen, {
   screenOptions as userShiftsScreenOptions
@@ -27,6 +27,9 @@ import EditShiftScreen, {
 import AuthScreen, {
   screenOptions as authScreenOptions
 } from '../screens/user/AuthScreen';
+import MapScreen, {
+  screenOptions as mapScreenOptions
+} from '../screens/shift/MapScreen';
 import ClockInOutScreen, { screenOptions as clockInOutOption} from '../screens/shift/ClockInOutScreen';
 import StartupScreen from '../screens/StartupScreen';
 import Colors from '../constants/Colors';
@@ -97,7 +100,7 @@ export const OrdersNavigator = () => {
       <OrdersStackNavigator.Screen
         name="jobScreen"
         component={JobScreen}
-        options={ordersScreenOptions}
+        options={jobScreenOptions}
       />
       <OrdersStackNavigator.Screen
         name="ClockInOut"
@@ -140,6 +143,11 @@ export const AdminNavigator = () => {
         name="EditShift"
         component={EditShiftScreen}
         options={editShiftScreenOptions}
+      />
+      <AdminStackNavigator.Screen
+        name="Map"
+        component={MapScreen}
+        options={mapScreenOptions}
       />
     </AdminStackNavigator.Navigator>
   );
