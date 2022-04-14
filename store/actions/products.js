@@ -2,7 +2,8 @@ import Shift from '../../models/product';
 import ShiftStatuses from "../../constants/ShiftStatuses";
 import Clocks from '../../models/Clocks';
 import { State } from 'react-native-gesture-handler';
-
+import { concat } from 'react-native-reanimated';
+import ENV from '../../env';
 export const CLOCK_IN = 'CLOCK_IN';
 export const CLOCK_OUT = 'CLOCK_OUT';
 export const SET_CLOCKS = 'SET_CLOCKS';
@@ -126,6 +127,29 @@ export const createShift = (title, description, imageUrl,shiftDate, shiftTime, s
     const shiftStatus = ShiftStatuses.open;
     const timeStamps = {};
     const bookedBy = "NONE";
+    let address;
+    if (shiftLocation) {
+    const response_map = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${ shiftLocation.lat },${shiftLocation.lng}&key=${ENV.googleApiKey}`);
+    
+      if (!response_map.ok) {
+        throw new Error('Something went wrong!');
+      }
+    
+      const resData_map = await response_map.json();
+      if (!resData_map.results) {
+        throw new Error('Something went wrong!');
+      }
+    
+      address = resData_map.results[0].formatted_address;
+    }
+    console.log("shiftLocation", shiftLocation);
+    // shiftLocation = concat(shiftLocation, address );
+    let lat = shiftLocation.lat;
+    let lng = shiftLocation.lng;
+    shiftLocation = {lat: lat, lng: lng, address: address}
+    console.log("address", address);
+    console.log("create", shiftLocation);
+    
     const response = await fetch(
       `https://clockin-clockout-default-rtdb.firebaseio.com/products.json?auth=${token}`,
       {
@@ -174,6 +198,28 @@ export const createShift = (title, description, imageUrl,shiftDate, shiftTime, s
 export const updateShift = (id, title, description, imageUrl, shiftDate, shiftTime, shiftLocation) => {
   return async (dispatch, getState) => {
     const token = getState().auth.token;
+    let address;
+    if (shiftLocation) {
+    const response_map = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${ shiftLocation.lat },${shiftLocation.lng}&key=${ENV.googleApiKey}`);
+    
+      if (!response_map.ok) {
+        throw new Error('Something went wrong!');
+      }
+    
+      const resData_map = await response_map.json();
+      if (!resData_map.results) {
+        throw new Error('Something went wrong!');
+      }
+    
+      address = resData_map.results[0].formatted_address;
+    }
+    console.log("shiftLocation", shiftLocation);
+    // shiftLocation = concat(shiftLocation, address );
+    let lat = shiftLocation.lat;
+    let lng = shiftLocation.lng;
+    shiftLocation = {lat: lat, lng: lng, address: address}
+    console.log("address", address);
+    console.log("create", shiftLocation);
     const response = await fetch(
       `https://clockin-clockout-default-rtdb.firebaseio.com/products/${id}.json?auth=${token}`,
       {

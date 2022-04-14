@@ -82,7 +82,7 @@ const ShiftsOverviewScreen = props => {
   if (!isLoading && products.length === 0) {
     return (
       <View style={styles.centered}>
-        <Text>No Shifts found. Maybe start adding some!</Text>
+        <Text>No Shifts found. Wait for the Admin to add!</Text>
       </View>
     );
   }

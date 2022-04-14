@@ -64,6 +64,11 @@ export const ShiftsNavigator = () => {
         options={productDetailScreenOptions}
       />
       <ShiftsStackNavigator.Screen
+        name="Map"
+        component={MapScreen}
+        options={mapScreenOptions}
+      />
+      <ShiftsStackNavigator.Screen
         name="Cart"
         component={CartScreen}
         options={cartScreenOptions}
@@ -106,6 +111,11 @@ export const OrdersNavigator = () => {
         name="ClockInOut"
         component={ClockInOutScreen}
         options={clockInOutOption}
+      />
+      <OrdersStackNavigator.Screen
+        name="Map"
+        component={MapScreen}
+        options={mapScreenOptions}
       />
     </OrdersStackNavigator.Navigator>
   );

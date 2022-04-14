@@ -16,11 +16,14 @@ const MapScreen = props => {
 //   const readonly = props.navigation.getParam('readonly');
 const initialLocation = props.route.params.initialLocation;
 const readonly = props.route.params.readonly;
+const id = props.route.params ? props.route.params.productId : null;
+// const id = null;
+// console.log(props.route.params);
   const [selectedLocation, setSelectedLocation] = useState(initialLocation);
 
   const mapRegion = {
-    latitude: initialLocation ? initialLocation.lat : 37.78,
-    longitude: initialLocation ? initialLocation.lng : -122.43,
+    latitude: initialLocation ? initialLocation.lat : 53.37797788442427,
+    longitude: initialLocation ? initialLocation.lng : -1.4704763330532893,
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421
   };
@@ -35,18 +38,29 @@ const readonly = props.route.params.readonly;
     });
   };
 
-  // const savePickedLocationHandler = useCallback(() => {
-  //   if (!selectedLocation) {
-  //     // could show an alert!
-  //     //Will do that later if I get the chance.
-  //     return;
-  //   }
-  //   props.navigation.navigate('NewPlace', { pickedLocation: selectedLocation });
-  // }, [selectedLocation]);
+  const savePickedLocationHandler = useCallback(() => {
+    if (!selectedLocation) {
+      // could show an alert!
+      //Will do that later if I get the chance.
+      return;
+    }
+    if(id){
+      props.navigation.navigate('EditShift', { mpickedLocation: selectedLocation, productId: id })
+      // if (readonly) {
+      //   // console.log("only check");
+      //   props.navigation.navigate('ShiftDetail', {productId: id })
 
-  // useEffect(() => {
-  //   props.navigation.setParams({ saveLocation: savePickedLocationHandler });
-  // }, [savePickedLocationHandler]);
+      // }else{
+      // }
+    }else{
+      
+      props.navigation.navigate('EditShift', { mpickedLocation: selectedLocation });
+    }
+  }, [selectedLocation]);
+
+  useEffect(() => {
+    props.navigation.setParams({ saveLocation: savePickedLocationHandler });
+  }, [savePickedLocationHandler]);
 
   let markerCoordinates;
 
@@ -64,7 +78,7 @@ const readonly = props.route.params.readonly;
       onPress={selectLocationHandler}
     >
       {markerCoordinates && (
-        <Marker title="Picked Location" coordinate={markerCoordinates} />
+        <Marker title="Shift Location" coordinate={markerCoordinates} />
       )}
     </MapView>
   );
@@ -72,36 +86,21 @@ const readonly = props.route.params.readonly;
 
 
 export const screenOptions = navData => {
-    // const saveFn = navData.navigation.getParam('saveLocation');
-    // const readonly = navData.navigation.getParam('readonly');
-    // const saveFn = navData.route.params.saveLocation;
-    // const readonly = navData.route.params.readonly;
-    // if (readonly) {
-    //   return {};
-    // }
-    // return {
-    //   headerRight: (
-    //     <TouchableOpacity style={styles.headerButton} onPress={saveFn}>
-    //       <Text style={styles.headerButtonText}>Save</Text>
-    //     </TouchableOpacity>
-    //   )
-    // };
+    
+    const saveFn = navData.route.params ? navData.route.params.saveLocation : null;
+    const readonly = navData.route.params.readonly;
+    if (readonly) {
+      return {};
+    }
+    return {
+      headerRight: () =>(
+        <TouchableOpacity style={styles.headerButton} onPress={saveFn}>
+          <Text style={styles.headerButtonText}>Save</Text>
+        </TouchableOpacity>
+      )
+    };
   };
 
-// MapScreen.navigationOptions = navData => {
-//   const saveFn = navData.navigation.getParam('saveLocation');
-//   const readonly = navData.navigation.getParam('readonly');
-//   if (readonly) {
-//     return {};
-//   }
-//   return {
-//     headerRight: (
-//       <TouchableOpacity style={styles.headerButton} onPress={saveFn}>
-//         <Text style={styles.headerButtonText}>Save</Text>
-//       </TouchableOpacity>
-//     )
-//   };
-// };
 
 const styles = StyleSheet.create({
   map: {

@@ -20,6 +20,8 @@ import Colors from '../../constants/Colors';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import LocationPicker from '../../components/shift/LocationPicker';
 import * as Location from 'expo-location';
+// import ReadableLocation from '../../components/shift/ReadableLocation';
+import ENV from '../../env';
 // import ShiftStatuses from '../../constants/ShiftStatuses';
 
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
@@ -51,7 +53,8 @@ const EditShiftScreen = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
   const [isFetching, setIsFetching] = useState(false);
-  const [pickedLocation, setPickedLocation] = useState();
+  const [humanAddress, setHumanAddress] = useState("Set Location of the Shift");
+  const mapPickedLocation = props.route.params ? props.route.params.pickedLocation :null;
 
   const prodId = props.route.params ? props.route.params.productId : null;
   const editedShift = useSelector(state =>
@@ -69,7 +72,7 @@ const EditShiftScreen = props => {
       price: '',
       // shiftDate: editedShift ? editedShift.shiftDate : '',
       // shiftTime: editedShift ? editedShift.shiftTime : '',
-      shiftLocation: editedShift ? editedShift.shiftLocation : ''
+      // shiftLocation: editedShift ? editedShift.shiftLocation : ''
     },
     inputValidities: {
       title: editedShift ? true : false,
@@ -79,7 +82,7 @@ const EditShiftScreen = props => {
       price: editedShift ? true : false,
       // shiftDate: true ,
       // shiftTime: true,
-      shiftLocation: editedShift ? true : false
+      // shiftLocation: editedShift ? true : false
     },
     formIsValid: editedShift ? true : false
   });
@@ -94,7 +97,8 @@ const EditShiftScreen = props => {
    const [mode, setMode] = useState('date');
    const [show, setShow] = useState(false);
    const [txt , setTxt] = useState("Set Date and Time");
-   const [selectedLocation, setSelectedLocation] = useState();
+   const [locationSelected, setLocationSelected] = useState(false);
+   const [selectedLocation, setSelectedLocation] = useState("Select Address");
   //  editedShift ? setTxt(editedShift.shiftDate + "\t" + editedShift.shiftTime): setTxt("Enter Date and Time")
    const onChange = (event, selectedDate) => {
      const currentDate = selectedDate || date;
@@ -109,16 +113,10 @@ const EditShiftScreen = props => {
      setTxt(fDate + "\t\t\t\t" + fTime );
  
    }
+
    //Location Based functions
-
-   const locationPickedHandler = useCallback(location => {
-    setSelectedLocation(location);
-  }, []);
-  const pickOnMapHandler = () => {
-    props.navigation.navigate('Map',{ saveLocation: "Location", readonly: false });
-  };
-
-  const verifyPermissions = async () => {
+  //  const [shiftLocation, setShiftLocation] = useState();
+   const verifyPermissions = async () => {
     const result = await Location.requestForegroundPermissionsAsync();
     // const result = await Permissions.askAsync(Permissions.LOCATION);
     if (result.status !== 'granted') {
@@ -143,7 +141,7 @@ const EditShiftScreen = props => {
       const location = await Location.getCurrentPositionAsync({
         timeout: 5000
       });
-      console.log(location);
+      // console.log(location);
       setPickedLocation({
         lat: location.coords.latitude,
         lng: location.coords.longitude
@@ -153,7 +151,7 @@ const EditShiftScreen = props => {
       //   lng: location.coords.longitude
       // });
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       Alert.alert(
         'Could not fetch location!',
         'Please try again later or pick a location on the map.',
@@ -162,6 +160,87 @@ const EditShiftScreen = props => {
     }
     setIsFetching(false);
   };
+
+  //  const locationPickedHandler = useCallback(location => {
+  //   setSelectedLocation(location);
+  // }, []);
+
+
+  //  const shiftLocation  = props.route.params ? props.route.params.mpickedLocation : null ;
+   let  shiftLocation;
+   if (props.route.params || editedShift) {
+    if (editedShift) {
+      shiftLocation = editedShift.shiftLocation;
+    }
+    else if (props.route.params) {
+      shiftLocation = props.route.params.mpickedLocation;
+    } else{
+      shiftLocation = null;
+      // console.log("Nulla");
+    }
+  }
+  // useEffect(() => {
+     
+     
+     
+  //     setShiftLocation(lshiftLocation);
+  //     console.log(shiftLocation);
+  // }, [lshiftLocation, props.route.params]);
+
+  //  if(!shiftLocation){
+    //  console.log("hola");
+  //  }
+  //  console.log("sh: ", shiftLocation);
+  // const getReadableLocation = async () => {
+  //   console.log("out");
+      
+  // }
+  
+
+  
+  const pickOnMapHandler = async ()  => {
+    //If Actual USer Location is needed then use this code i.e Uncomment this
+    //Make async this function
+    let userLocation;
+    // const hasPermission = await verifyPermissions();
+    // if (!hasPermission) {
+    //   return;
+    // }
+
+    // try {
+    //   setIsFetching(true);
+    //   const cLocation = await Location.getCurrentPositionAsync({
+    //     timeout: 5000
+    //   });
+    //   userLocation = {
+    //     lat: cLocation.coords.latitude,
+    //     lng: cLocation.coords.longitude
+    //   }
+    // 
+    // } catch (err) {
+    //   console.log(err);
+    //   Alert.alert(
+    //     'Could not fetch location!',
+    //     'Please try again later or pick a location on the map.',
+    //     [{ text: 'Okay' }]
+    //   );
+    // }
+    // setIsFetching(false);
+    if (!shiftLocation) {
+      props.navigation.navigate('Map',{ saveLocation: userLocation, readonly: false });
+    }
+    else if (editedShift) {
+      // console.log(prodId);
+      props.navigation.navigate('Map',{ initialLocation: shiftLocation, productId: prodId, readonly: false });
+    }
+    else{
+      props.navigation.navigate('Map',{ initialLocation: shiftLocation, readonly: false });
+
+    }
+    // const res = await getReadableLocation();
+  };
+
+  
 
    const showMode = (currentMode) =>{
      setShow(true);
@@ -193,9 +272,10 @@ const EditShiftScreen = props => {
             formState.inputValues.imageUrl,
             shiftDate,
             shiftTime,
+            shiftLocation
             // formState.inputValues.shiftDate,
             // formState.inputValues.shiftTime,
-            formState.inputValues.shiftLocation,
+            // formState.inputValues.shiftLocation,
             // formState.inputValues.shiftStatus
           )
         );
@@ -207,9 +287,10 @@ const EditShiftScreen = props => {
             formState.inputValues.imageUrl,
             shiftDate,
             shiftTime,
+            shiftLocation,
             // formState.inputValues.shiftDate,
             // formState.inputValues.shiftTime,
-            formState.inputValues.shiftLocation,
+            // formState.inputValues.shiftLocation,
             // formState.inputValues.shiftStatus,
             +formState.inputValues.price
           )
@@ -326,7 +407,7 @@ const EditShiftScreen = props => {
             required
           /> */}
 
-          <Input
+          {/* <Input
             id="shiftLocation"
             label="Location of the Shift"
             errorText="Please enter a valid Location!"
@@ -336,35 +417,30 @@ const EditShiftScreen = props => {
             initialValue={editedShift ? editedShift.shiftLocation : ''}
             initiallyValid={!!editedShift}
             required
-          />
-          {/* {console.log(props.navigation)} */}
-          <View style={styles.actions}>
-            <Button
+          /> */}
+         
+          <View style={styles.container}>
+            {/* <Button
             title="Get User Location"
             color={Colors.primary}
             onPress={getLocationHandler}
-            />
+            /> */}
+            <View>
+              
+            </View>
+            <View style={{marginBottom: 15}}>
+              {(editedShift && (<Text>{editedShift.shiftLocation.address}</Text>)) }
+              {editedShift ? null : (<View>{}</View>)}
+              {/* {<Text>{editedShift.shiftLocation.address}</Text>} */}
+            </View>
             <Button
-            title="Pick on Map"
+            title= {editedShift ? "Change Location" : "Pick on Location Map"}
             color={Colors.primary}
             onPress={pickOnMapHandler}
             />
           </View>
-          {/* <LocationPicker
-          navigation={props.navigation}
-          onLocationPicked={locationPickedHandler}
-        /> */}
-          {/* <Input
-            id="shiftStatus"
-            label="Choose Shift Status"
-            errorText="Please enter a valid shift status"
-            keyboardType="default"
-            returnKeyType="next"
-            onInputChange={inputChangeHandler}
-            initialValue={editedShift ? editedShift.shiftStatus : ShiftStatuses.open}
-            initiallyValid={!!editedShift}
-            required
-          /> */}
+          
+          
           <View style= {styles.container}>
             <Text >
               {/* { editedShift ? setTxt(editedShift.shiftDate + "\t" + editedShift.shiftTime): setTxt("Enter Date and Time") } */}
@@ -393,7 +469,7 @@ const EditShiftScreen = props => {
             <Input
               id="price"
               label="Pay per Hour"
-              errorText="Please enter a valid price!"
+              errorText="Please enter a valid pay!"
               keyboardType="decimal-pad"
               returnKeyType="next"
               onInputChange={inputChangeHandler}

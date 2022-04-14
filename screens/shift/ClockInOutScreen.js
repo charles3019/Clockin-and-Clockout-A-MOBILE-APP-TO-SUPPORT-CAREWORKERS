@@ -72,22 +72,29 @@ const ClockInOutScreen = props => {
   );
   const dispatch = useDispatch();
   const StimeStamps = selectedShift.timeStamps;
-  // console.log(StimeStamps);
-  // console.log(StimeStamps.length);
-  // for (const key in resData)
-  // console.log("Details Screen", selectedShift);
+  const pickOnMapHandler = async ()  => {
+    let shiftLocation = selectedShift.shiftLocation;
+    props.navigation.navigate('Map',{ initialLocation: shiftLocation, productId: productId, readonly: true });
+    
+    
+  };
   return (
     <ScrollView>
       <Image style={styles.image} source={{ uri: selectedShift.imageUrl }} />
       
       {/* .toFixed(2) */}
-      <Text style={styles.price}>${selectedShift.price}</Text>
-      <Text style={styles.description}>{selectedShift.description}</Text>
+      <Text style={styles.price}>£{selectedShift.price}</Text>
+      <View style = {styles.statusStyle}>
+      <Text style={{fontFamily: 'open-sans'}}>{selectedShift.description}</Text>
+      </View>
       <View style = {styles.statusStyle}>
 
       <Text style={{fontFamily: 'open-sans', width: "35%"}}>{"Status"}</Text>
       <Text style={{fontFamily: 'open-sans-bold'}}>{selectedShift.shiftStatus}</Text>
 
+      </View>
+      <View style = {styles.statusStyle}>
+      {(selectedShift && (<Text style={{fontFamily: 'open-sans-bold'}}>{selectedShift.shiftLocation.address}</Text>)) }
       </View>
 
       <View style ={styles.table} >
@@ -144,13 +151,23 @@ const ClockInOutScreen = props => {
         </View>
       </View>
       <View style={styles.actions}>
-      <Button
+        <View style={styles.threeButtons}>
+          <View>
+        <Button
           color={Colors.primary}
           title="Back"
           disabled={homeButton === false}
           onPress={() => { props.navigation.navigate('jobScreen')}}
         />
-
+        </View>
+        <View>
+        <Button
+            title= "View Location"
+            color={Colors.primary}
+            onPress={pickOnMapHandler}
+          />
+        </View>
+        </View>
       </View>
       
     </ScrollView>

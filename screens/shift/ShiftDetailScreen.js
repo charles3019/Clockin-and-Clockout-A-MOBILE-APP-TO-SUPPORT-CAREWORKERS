@@ -18,6 +18,24 @@ const ShiftDetailScreen = props => {
   const selectedShift = useSelector(state =>
     state.products.availableShifts.find(prod => prod.id === productId)
   );
+  const pickOnMapHandler = async ()  => {
+    
+    let userLocation;
+    let shiftLocation = selectedShift.shiftLocation;
+    props.navigation.navigate('Map',{ initialLocation: shiftLocation, productId: productId, readonly: true });
+    
+    // if (!shiftLocation) {
+    //   props.navigation.navigate('Map',{ saveLocation: userLocation, readonly: false });
+    // }
+    // else if (selectedShift) {
+    //   // console.log(prodId);
+    // }
+    // else{
+    //   props.navigation.navigate('Map',{ initialLocation: shiftLocation, readonly: false });
+
+    // }
+    // const res = await getReadableLocation();
+  };
   const dispatch = useDispatch();
   // console.log("Details Screen", selectedShift);
   return (
@@ -38,8 +56,23 @@ const ShiftDetailScreen = props => {
         /> */}
       </View>
       {/* .toFixed(2) */}
-      <Text style={styles.price}>${selectedShift.price}</Text>
+      <Text style={styles.price}>£{selectedShift.price}</Text>
       <Text style={styles.description}>{selectedShift.description}</Text>
+      <Text style={styles.description}> {"Shift Date: "}{selectedShift.shiftDate} </Text>
+      <Text style={styles.description}> {"Shift Time: "}{selectedShift.shiftTime} </Text>
+      <View style={styles.container}>
+            
+          <View style={{marginVertical: 10, marginHorizontal: 15, alignItems: "center"}}>
+              {(selectedShift && (<Text>{selectedShift.shiftLocation.address}</Text>)) }
+              {selectedShift ? null : (<View>{}</View>)}
+              {/* {<Text>{selectedShift.shiftLocation.address}</Text>} */}
+            </View>
+            <Button
+            title= "View Location"
+            color={Colors.primary}
+            onPress={pickOnMapHandler}
+            />
+          </View>
       {/* <Text style={styles.description}>{selectedShift}</Text> */}
     </ScrollView>
   );
@@ -71,7 +104,8 @@ const styles = StyleSheet.create({
     fontFamily: 'open-sans',
     fontSize: 14,
     textAlign: 'center',
-    marginHorizontal: 20
+    marginHorizontal: 20,
+    marginVertical: 5
   }
 });
 
