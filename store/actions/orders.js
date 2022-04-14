@@ -7,8 +7,6 @@ export const fetchOrders = () => {
   return async (dispatch, getState) => {
     const userId = getState().auth.userId;
     const shift_arr = getState().products.availableShifts;
-
-    console.log(shift_arr[1].bookedBy);
     try {
       const response = await fetch(
         `https://clockin-clockout-default-rtdb.firebaseio.com/orders/${userId}.json`

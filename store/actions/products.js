@@ -1,8 +1,8 @@
 import Shift from '../../models/product';
 import ShiftStatuses from "../../constants/ShiftStatuses";
 import Clocks from '../../models/Clocks';
-import { State } from 'react-native-gesture-handler';
-import { concat } from 'react-native-reanimated';
+// import { State } from 'react-native-gesture-handler';
+// import { concat } from 'react-native-reanimated';
 import ENV from '../../env';
 export const CLOCK_IN = 'CLOCK_IN';
 export const CLOCK_OUT = 'CLOCK_OUT';
@@ -31,10 +31,7 @@ export const fetchShifts = () => {
       const loadedShifts = [];
 
       for (const key in resData) {
-        // console.log(resData[key]);
         loadedShifts.push(
-          // constructor(id, ownerId, title, imageUrl,  shiftDate, shiftTime, shiftLocation, shiftStatus, bookedBy, description, timeStamps, price) {
-  
           new Shift(
             key,
             resData[key].ownerId,
@@ -67,8 +64,6 @@ export const fetchShifts = () => {
 
 export const fetchClocks = () => {
   return async (dispatch, getState) => {
-    // any async code you want!
-    // const userId = getState().auth.userId;
     try {
       const response = await fetch(
         'https://clockin-clockout-default-rtdb.firebaseio.com/clocks.json'
@@ -82,7 +77,6 @@ export const fetchClocks = () => {
       const loadedClocks = [];
 
       for (const key in resData) {
-        // console.log(resData[key]);
         loadedClocks.push(
           new Clocks(
             key,
@@ -96,7 +90,6 @@ export const fetchClocks = () => {
         shiftClocks: loadedClocks.filter(prod => prod.bookedBy === "NONE"),
       });
     } catch (err) {
-      // send to custom analytics server
       throw err;
     }
   };
@@ -121,7 +114,6 @@ export const deleteShift = productId => {
 
 export const createShift = (title, description, imageUrl,shiftDate, shiftTime, shiftLocation, price ) => {
   return async (dispatch, getState) => {
-    // any async code you want!
     const token = getState().auth.token;
     const userId = getState().auth.userId;
     const shiftStatus = ShiftStatuses.open;
@@ -142,13 +134,9 @@ export const createShift = (title, description, imageUrl,shiftDate, shiftTime, s
     
       address = resData_map.results[0].formatted_address;
     }
-    console.log("shiftLocation", shiftLocation);
-    // shiftLocation = concat(shiftLocation, address );
     let lat = shiftLocation.lat;
     let lng = shiftLocation.lng;
     shiftLocation = {lat: lat, lng: lng, address: address}
-    console.log("address", address);
-    console.log("create", shiftLocation);
     
     const response = await fetch(
       `https://clockin-clockout-default-rtdb.firebaseio.com/products.json?auth=${token}`,
@@ -213,13 +201,9 @@ export const updateShift = (id, title, description, imageUrl, shiftDate, shiftTi
     
       address = resData_map.results[0].formatted_address;
     }
-    console.log("shiftLocation", shiftLocation);
-    // shiftLocation = concat(shiftLocation, address );
     let lat = shiftLocation.lat;
     let lng = shiftLocation.lng;
     shiftLocation = {lat: lat, lng: lng, address: address}
-    console.log("address", address);
-    console.log("create", shiftLocation);
     const response = await fetch(
       `https://clockin-clockout-default-rtdb.firebaseio.com/products/${id}.json?auth=${token}`,
       {
@@ -234,7 +218,6 @@ export const updateShift = (id, title, description, imageUrl, shiftDate, shiftTi
           shiftDate,
           shiftTime,
           shiftLocation
-          // shiftStatus,
         })
       }
     );
@@ -253,7 +236,6 @@ export const updateShift = (id, title, description, imageUrl, shiftDate, shiftTi
         shiftDate,
         shiftTime,
         shiftLocation
-        // shiftStatus
       }
     });
   };
@@ -295,9 +277,7 @@ export const bookShift = (id, shiftStatus) => {
 
 export const cancelShift = (id, shiftStatus) => {
   return async (dispatch, getState) => {
-    // any async code you want!
     const token = getState().auth.token;
-    // const bookedBy = getState().auth.userId;
     const bookedBy = "NONE";
     const response = await fetch(
       `https://clockin-clockout-default-rtdb.firebaseio.com/products/${id}.json?auth=${token}`,
@@ -334,42 +314,20 @@ export const closeShift = (id, timeIn, timeOut, shiftStatus) => {
   return async (dispatch, getState) => {
 
     const token = getState().auth.token;
-    // const oldTime = getState().auth.timeStamps;
-    // {...state.products.s}
-    // const cancelIndex = state.userBookShift.findIndex(
-    //   prod => prod.id === action.pid
-    // );
-    // c
     const shift_arr = getState().products.userBookShift;
-    // console.log("shift", shift_arr);
     const shiftIndex = shift_arr.findIndex(
       prod => prod.id === id
     );
-    // console.log("index", shiftIndex);
-    // console.log("TimeIn", timeIn);
-    // console.log("TimeOut", timeOut);
-    
+
     let oldTime = shift_arr[shiftIndex].timeStamps;
     const timeShift = new Clocks(timeIn, timeOut);
     let timeStamps = shift_arr[shiftIndex].timeStamps;
-    // console.log("Type of oldTime" , typeof oldTime);
     if (!oldTime) {
       timeStamps = [];
       timeStamps.push(timeShift);
     }else{
-      // oldTime.push(timeShift);
-      // timeStamps.push(oldTime);
-      // timeStamps.push(timeShift);
       timeStamps.push(timeShift);
-      // timeStamps = timeStamps.concat(timeShift);
-      // timeStamps = {...oldTime, timeShift};
     }
-    // console.log("OldTime", oldTime);
-    
-    // console.log("timeShift", timeShift);
-
-    // console.log("time stamp", typeof timeStamps);
-    // console.log("time stamp", timeStamps);
     const response = await fetch(
       `https://clockin-clockout-default-rtdb.firebaseio.com/products/${id}.json?auth=${token}`,
       {

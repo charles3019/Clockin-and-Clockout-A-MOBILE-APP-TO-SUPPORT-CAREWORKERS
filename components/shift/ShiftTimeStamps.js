@@ -2,24 +2,11 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 
 const ShiftTimeStamps = props => {
-// for (const key in resData)
-// const testStamps = props.StimeStamps;
-// console.log("test: ", testStamps);
-// for (let index = 0; index < testStamps.length; index++) {
-//     const element = testStamps[index];
-    // console.log("e", props.inTime);
-    
-// }
     return (
-        // <ScrollView>
             <View>
             {
                 
             <View style ={styles.table}>
-            {/* <Text>
-                {"#"}
-            </Text> */}
-            {/* style = {{width:'40%'}} */}
             <Text>
                 {props.inTime}
             </Text>
@@ -31,28 +18,6 @@ const ShiftTimeStamps = props => {
             }
 
         </View>
-        
-        //</ScrollView>
-
-    //   <Card style={styles.product}>
-    //     <View style={styles.touchable}>
-    //       <TouchableCmp onPress={props.onSelect} useForeground>
-    //         <View>
-    //           <View style={styles.imageContainer}>
-    //             <Image style={styles.image} source={{ uri: props.image }} />
-    //           </View>
-    //           <View style={styles.details}>
-    //             <Text style={styles.title}>{props.title}</Text>
-    //             {/* .toFixed(2) */}
-    //             <Text style={styles.price}>${props.price}</Text>
-    //           </View>
-    //           <View style={styles.actions}>
-    //             {props.children}
-    //           </View>
-    //         </View>
-    //       </TouchableCmp>
-    //     </View>
-    //   </Card>
     );
   };
   

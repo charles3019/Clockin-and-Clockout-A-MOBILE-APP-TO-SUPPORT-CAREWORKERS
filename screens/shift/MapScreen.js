@@ -1,25 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Platform
-} from 'react-native';
+import {Text, StyleSheet, TouchableOpacity,Platform } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-
 import Colors from '../../constants/Colors';
-
-
 const MapScreen = props => {
-//   const initialLocation = props.navigation.getParam('initialLocation');
-//   const readonly = props.navigation.getParam('readonly');
 const initialLocation = props.route.params.initialLocation;
 const readonly = props.route.params.readonly;
 const id = props.route.params ? props.route.params.productId : null;
-// const id = null;
-// console.log(props.route.params);
-  const [selectedLocation, setSelectedLocation] = useState(initialLocation);
+const [selectedLocation, setSelectedLocation] = useState(initialLocation);
 
   const mapRegion = {
     latitude: initialLocation ? initialLocation.lat : 53.37797788442427,
@@ -46,12 +33,6 @@ const id = props.route.params ? props.route.params.productId : null;
     }
     if(id){
       props.navigation.navigate('EditShift', { mpickedLocation: selectedLocation, productId: id })
-      // if (readonly) {
-      //   // console.log("only check");
-      //   props.navigation.navigate('ShiftDetail', {productId: id })
-
-      // }else{
-      // }
     }else{
       
       props.navigation.navigate('EditShift', { mpickedLocation: selectedLocation });

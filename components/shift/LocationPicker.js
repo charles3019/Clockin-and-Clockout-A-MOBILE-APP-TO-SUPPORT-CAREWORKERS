@@ -8,10 +8,7 @@ import {
   StyleSheet
 } from 'react-native';
 import * as Location from 'expo-location';
-// import * as Permissions from 'expo-permissions';
-
 import Colors from '../../constants/Colors'
-// import MapPreview from './MapPreview';
 
 const LocationPicker = props => {
   const [isFetching, setIsFetching] = useState(false);
@@ -31,7 +28,6 @@ const LocationPicker = props => {
 
   const verifyPermissions = async () => {
     const result = await Location.requestForegroundPermissionsAsync();
-    // const result = await Permissions.askAsync(Permissions.LOCATION);
     if (result.status !== 'granted') {
       Alert.alert(
         'Insufficient permissions!',
@@ -78,17 +74,6 @@ const LocationPicker = props => {
 
   return (
     <View style={styles.locationPicker}>
-      {/* <MapPreview
-        style={styles.mapPreview}
-        location={pickedLocation}
-        onPress={pickOnMapHandler}
-      >
-        {isFetching ? (
-          <ActivityIndicator size="large" color={Colors.primary} />
-        ) : (
-          <Text>No location chosen yet!</Text>
-        )}
-      </MapPreview> */}
       <View style={styles.actions}>
         <Button
           title="Get User Location"

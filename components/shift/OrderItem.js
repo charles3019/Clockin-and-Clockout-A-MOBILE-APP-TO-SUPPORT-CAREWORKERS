@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
-
 import BookedItem from './BookedItem';
 import Colors from '../../constants/Colors';
 import Card from '../UI/Card';

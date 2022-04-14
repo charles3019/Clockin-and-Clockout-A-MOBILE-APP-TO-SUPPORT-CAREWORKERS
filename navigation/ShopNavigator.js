@@ -31,7 +31,7 @@ import MapScreen, {
   screenOptions as mapScreenOptions
 } from '../screens/shift/MapScreen';
 import ClockInOutScreen, { screenOptions as clockInOutOption} from '../screens/shift/ClockInOutScreen';
-import StartupScreen from '../screens/StartupScreen';
+// import StartupScreen from '../screens/StartupScreen';
 import Colors from '../constants/Colors';
 import * as authActions from '../store/actions/auth';
 
@@ -77,25 +77,6 @@ export const ShiftsNavigator = () => {
   );
 };
 
-// const ShiftsNavigator = createStackNavigator(
-//   {
-//     ShiftsOverview: ShiftsOverviewScreen,
-//     ShiftDetail: ShiftDetailScreen,
-//     Cart: CartScreen
-//   },
-//   {
-//     navigationOptions: {
-//       drawerIcon: drawerConfig => (
-//         <Ionicons
-//           name={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
-//           size={23}
-//           color={drawerConfig.tintColor}
-//         />
-//       )
-//     },
-//     defaultNavigationOptions: defaultNavOptions
-//   }
-// );
 
 const OrdersStackNavigator = createStackNavigator();
 
@@ -121,24 +102,6 @@ export const OrdersNavigator = () => {
   );
 };
 
-// const OrdersNavigator = createStackNavigator(
-//   {
-//     Orders: JobScreen
-//   },
-//   {
-//     navigationOptions: {
-//       drawerIcon: drawerConfig => (
-//         <Ionicons
-//           name={Platform.OS === 'android' ? 'md-list' : 'ios-list'}
-//           size={23}
-//           color={drawerConfig.tintColor}
-//         />
-//       )
-//     },
-//     defaultNavigationOptions: defaultNavOptions
-//   }
-// );
-
 const AdminStackNavigator = createStackNavigator();
 
 export const AdminNavigator = () => {
@@ -163,24 +126,6 @@ export const AdminNavigator = () => {
   );
 };
 
-// const AdminNavigator = createStackNavigator(
-//   {
-//     UserShifts: UserShiftsScreen,
-//     EditShift: EditShiftScreen
-//   },
-//   {
-//     navigationOptions: {
-//       drawerIcon: drawerConfig => (
-//         <Ionicons
-//           name={Platform.OS === 'android' ? 'md-create' : 'ios-create'}
-//           size={23}
-//           color={drawerConfig.tintColor}
-//         />
-//       )
-//     },
-//     defaultNavigationOptions: defaultNavOptions
-//   }
-// );
 
 const ShopDrawerNavigator = createDrawerNavigator();
 
@@ -255,36 +200,6 @@ export const ShopNavigator = () => {
   );
 };
 
-// const ShopNavigator = createDrawerNavigator(
-//   {
-//     Shifts: ShiftsNavigator,
-//     Orders: OrdersNavigator,
-//     Admin: AdminNavigator
-//   },
-//   {
-//     contentOptions: {
-//       activeTintColor: Colors.primary
-//     },
-//     contentComponent: props => {
-//       const dispatch = useDispatch();
-//       return (
-//         <View style={{ flex: 1, paddingTop: 20 }}>
-//           <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
-//             <DrawerItems {...props} />
-//             <Button
-//               title="Logout"
-//               color={Colors.primary}
-//               onPress={() => {
-//                 dispatch(authActions.logout());
-//                 // props.navigation.navigate('Auth');
-//               }}
-//             />
-//           </SafeAreaView>
-//         </View>
-//       );
-//     }
-//   }
-// );
 
 const AuthStackNavigator = createStackNavigator();
 
@@ -300,19 +215,3 @@ export const AuthNavigator = () => {
   );
 };
 
-// const AuthNavigator = createStackNavigator(
-//   {
-//     Auth: AuthScreen
-//   },
-//   {
-//     defaultNavigationOptions: defaultNavOptions
-//   }
-// );
-
-// const MainNavigator = createSwitchNavigator({
-//   Startup: StartupScreen,
-//   Auth: AuthNavigator,
-//   Shop: ShopNavigator
-// });
-
-// export default createAppContainer(MainNavigator);

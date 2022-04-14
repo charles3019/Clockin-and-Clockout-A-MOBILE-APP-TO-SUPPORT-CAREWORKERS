@@ -1,4 +1,3 @@
-import PRODUCTS from '../../data/dummy-data';
 import {
   DELETE_PRODUCT,
   CREATE_PRODUCT,
@@ -21,7 +20,6 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case SET_PRODUCTS:
-      // console.log("dispatch ", action.userShifts);
       return {
         availableShifts: action.products,
         userShifts: action.userShifts,
@@ -29,7 +27,6 @@ export default (state = initialState, action) => {
       };
     case CREATE_PRODUCT:
       
-      // id, ownerId, title, imageUrl,  shiftDate, shiftTime, shiftLocation, shiftStatus, bookedBy, description, price
       const newShift = new Shift(
         action.productData.id,
         action.productData.ownerId,
@@ -53,7 +50,6 @@ export default (state = initialState, action) => {
       const productIndex = state.userShifts.findIndex(
         prod => prod.id === action.pid
       );
-      // console.log(state.userShifts[productIndex]);
       const updatedShift = new Shift(
         action.pid,
         state.userShifts[productIndex].ownerId,
@@ -102,8 +98,6 @@ export default (state = initialState, action) => {
       const bookedIndex = state.availableShifts.findIndex(
         prod => prod.id === action.pid
       );
-      // console.log(state.userShifts[productIndex]);
-      console.log(state.availableShifts[bookedIndex].ownerId);
       const book_Shift = new Shift(
         action.pid,
         state.availableShifts[bookedIndex].ownerId,
@@ -129,7 +123,6 @@ export default (state = initialState, action) => {
         prod => prod.id === action.pid
       );
       upUserShift[userShiftIndexUpdated] = book_Shift;
-      // updatedUderBookShifts[userBookShiftIndex] = updatedShift;
       return {
         ...state,
         availableShifts: state.availableShifts.filter(
@@ -137,16 +130,12 @@ export default (state = initialState, action) => {
         ),
         userShifts: upUserShift,
         userBookShift: updatedUserBookShifts
-        // availableShifts: bookAvailableShifts,
-        
       };
 
       case CANCEL_SHIFT:
         const cancelIndex = state.userBookShift.findIndex(
           prod => prod.id === action.pid
         );
-        // console.log(state.userShifts[productIndex]);
-        // console.log(state.availableShifts[cancelIndex].ownerId);
         const cancel_shift = new Shift(
           action.pid,
           state.userBookShift[cancelIndex].ownerId,
@@ -162,7 +151,6 @@ export default (state = initialState, action) => {
           state.userBookShift[cancelIndex].price
         );
         const cancelAvailableShifts = [...state.availableShifts];
-        // updatedCancelUserShifts[cancelIndex] = cancel_shift;
         cancelAvailableShifts.push(cancel_shift);
                 
         const cancelUserBookShifts = [...state.userBookShift];
@@ -173,28 +161,20 @@ export default (state = initialState, action) => {
           prod => prod.id === action.pid
         );
         cancelUserShifts[cancelUserShiftsIndex] = cancel_shift;
-        // updatedUderBookShifts[userBookShiftIndex] = updatedShift;
         return {
           ...state,
           availableShifts: cancelAvailableShifts,
           
-          // state.availableShifts.filter(
-          //   product => product.id !== action.pid
-          // ),
           userShifts: cancelUserShifts,
           userBookShift: state.userBookShift.filter(
             product => product.id !== action.pid
           )
-          // availableShifts: bookAvailableShifts,
-          
         };
 
         case CLOCK_OUT:
         const outIndex = state.userBookShift.findIndex(
           prod => prod.id === action.pid
         );
-        // console.log(state.userShifts[productIndex]);
-        // console.log(state.availableShifts[cancelIndex].ownerId);
         const outShift = new Shift(
           action.pid,
           state.userBookShift[outIndex].ownerId,
@@ -210,8 +190,6 @@ export default (state = initialState, action) => {
           state.userBookShift[outIndex].price
         );
         const outAvailableShifts = [...state.availableShifts];
-        // updatedCancelUserShifts[outIndex] = outShift;
-
         const outUserBookShifts = [...state.userBookShift];
         outUserBookShifts[outIndex]= outShift;
   
@@ -220,13 +198,11 @@ export default (state = initialState, action) => {
           prod => prod.id === action.pid
         );
         outUserShifts[outUserShiftsIndex] = outShift;
-        // updatedUderBookShifts[userBookShiftIndex] = updatedShift;
         return {
           ...state,
           availableShifts: outAvailableShifts,
           userShifts: outUserShifts,
           userBookShift: outUserBookShifts
-          // availableShifts: bookAvailableShifts,
           
         };
   }
